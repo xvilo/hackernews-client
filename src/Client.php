@@ -28,4 +28,9 @@ class Client
     private function setupHttpBuilder(): void
     {
     }
+
+    protected function getHttpClientBuilder(): HttpClientBuilder
+    {
+        return $this->httpClientBuilder;
+    }
 }
