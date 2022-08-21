@@ -12,32 +12,53 @@ declare(strict_types=1);
 
 namespace Xvilo\HackerNews;
 
+use Http\Client\Common\HttpMethodsClient;
+use Http\Client\Common\Plugin;
 use Http\Discovery\Psr17FactoryDiscovery;
 use Xvilo\HackerNews\HttpClient\HttpClientBuilder;
-use Http\Client\Common\Plugin;
 
 class Client
 {
     private HttpClientBuilder $httpClientBuilder;
+
+    private Api\Item $item;
 
     public function __construct(HttpClientBuilder $httpClientBuilder = null)
     {
         $this->httpClientBuilder = $httpClientBuilder ?: new HttpClientBuilder();
 
         $this->setupHttpBuilder();
+
+        // Setup api
+        $this->item = new Api\Item($this);
     }
 
-    private function setupHttpBuilder(): void
+    public function getHttpClient(): HttpMethodsClient
     {
-        $this->httpClientBuilder->addPlugin(new Plugin\RedirectPlugin());
-        $this->httpClientBuilder->addPlugin(
-            new Plugin\AddHostPlugin(Psr17FactoryDiscovery::findUriFactory()
-                ->createUri('https://hacker-news.firebaseio.com/v0/'))
-        );
+        return $this->getHttpClientBuilder()->getHttpClient();
+    }
+
+    public function item(): Api\Item
+    {
+        return $this->item;
     }
 
     protected function getHttpClientBuilder(): HttpClientBuilder
     {
         return $this->httpClientBuilder;
+    }
+
+    private function setupHttpBuilder(): void
+    {
+        $uri = 'https://hacker-news.firebaseio.com/v0/';
+        $this->httpClientBuilder->addPlugin(new Plugin\RedirectPlugin());
+        $this->httpClientBuilder->addPlugin(
+            new Plugin\AddHostPlugin(Psr17FactoryDiscovery::findUriFactory()
+                ->createUri($uri))
+        );
+        $this->httpClientBuilder->addPlugin(
+            new Plugin\AddPathPlugin(Psr17FactoryDiscovery::findUriFactory()
+                ->createUri($uri))
+        );
     }
 }

@@ -15,25 +15,26 @@ namespace Xvilo\HackerNews\HttpClient;
 use Http\Client\Common\HttpMethodsClient;
 use Http\Client\Common\Plugin;
 use Http\Client\Common\PluginClientFactory;
+use Http\Client\HttpClient;
 use Http\Discovery\HttpClientDiscovery;
 use Http\Discovery\Psr17FactoryDiscovery;
-use Http\Client\HttpClient;
-use Http\Message\RequestFactory;
-use Http\Message\StreamFactory;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 
 class HttpClientBuilder
 {
     private HttpClient $httpClient;
-    private RequestFactory $requestFactory;
-    private StreamFactory $streamFactory;
+    private RequestFactoryInterface $requestFactory;
+    private StreamFactoryInterface $streamFactory;
+
     /** @var Plugin[] */
     private array $plugins = [];
-    private HttpMethodsClient $pluginClient;
+    private ?HttpMethodsClient $pluginClient;
 
     public function __construct(
         HttpClient $httpClient = null,
-        RequestFactory $requestFactory = null,
-        StreamFactory $streamFactory = null
+        RequestFactoryInterface $requestFactory = null,
+        StreamFactoryInterface $streamFactory = null
     ) {
         $this->httpClient = $httpClient ?: HttpClientDiscovery::find();
         $this->requestFactory = $requestFactory ?: Psr17FactoryDiscovery::findRequestFactory();
@@ -42,13 +43,11 @@ class HttpClientBuilder
 
     /**
      * Add a new plugin to the end of the plugin chain.
-     *
-     * @param Plugin $plugin
      */
-    public function addPlugin(Plugin $plugin)
+    public function addPlugin(Plugin $plugin): void
     {
         $this->plugins[] = $plugin;
-        unset($this->pluginClient);
+        $this->pluginClient = null;
     }
 
     /**
@@ -56,12 +55,12 @@ class HttpClientBuilder
      *
      * @param string $fqcn
      */
-    public function removePlugin($fqcn)
+    public function removePlugin($fqcn): void
     {
         foreach ($this->plugins as $idx => $plugin) {
             if ($plugin instanceof $fqcn) {
                 unset($this->plugins[$idx]);
-                unset($this->pluginClient);
+                $this->pluginClient = null;
             }
         }
     }
@@ -69,11 +68,11 @@ class HttpClientBuilder
     public function getHttpClient(): HttpMethodsClient
     {
         if (!isset($this->pluginClient)) {
-
             $plugins = $this->plugins;
             $this->pluginClient = new HttpMethodsClient(
                 (new PluginClientFactory())->createClient($this->httpClient, $plugins),
-                $this->requestFactory
+                $this->requestFactory,
+                $this->streamFactory
             );
         }
 
