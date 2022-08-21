@@ -14,8 +14,8 @@ namespace Xvilo\HackerNews\Api;
 
 final class Item extends AbstractApi
 {
-    public function getItem(string $id): array
+    public function getItem(int $id): array
     {
-        return $this->get(sprintf('/item/%s', $id));
+        return $this->get(sprintf('/item/%d', $id));
     }
 }
