@@ -22,6 +22,7 @@ class Client
     private HttpClientBuilder $httpClientBuilder;
 
     private Api\Item $item;
+    private Api\Users $user;
 
     public function __construct(HttpClientBuilder $httpClientBuilder = null)
     {
@@ -31,6 +32,7 @@ class Client
 
         // Setup api
         $this->item = new Api\Item($this);
+        $this->user = new Api\Users($this);
     }
 
     public function getHttpClient(): HttpMethodsClient
@@ -41,6 +43,11 @@ class Client
     public function item(): Api\Item
     {
         return $this->item;
+    }
+
+    public function user(): Api\Users
+    {
+        return $this->user;
     }
 
     protected function getHttpClientBuilder(): HttpClientBuilder
