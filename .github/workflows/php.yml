@@ -16,3 +16,6 @@ jobs:
 
       - name: Check php code style (PHP CS Fixer)
         run: ./vendor/bin/php-cs-fixer fix -v src/
+
+      - name: Check php static analysis (PHPSTAN)
+        run: ./vendor/bin/phpstan analyse
