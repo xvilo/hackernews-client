@@ -14,5 +14,7 @@
             "email": "sem@tropical.email"
         }
     ],
-    "require": {}
+    "require": {
+        "php": "^8.1"
+    }
 }
