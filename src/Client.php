@@ -12,7 +12,9 @@ declare(strict_types=1);
 
 namespace Xvilo\HackerNews;
 
+use Http\Discovery\Psr17FactoryDiscovery;
 use Xvilo\HackerNews\HttpClient\HttpClientBuilder;
+use Http\Client\Common\Plugin;
 
 class Client
 {
@@ -27,6 +29,11 @@ class Client
 
     private function setupHttpBuilder(): void
     {
+        $this->httpClientBuilder->addPlugin(new Plugin\RedirectPlugin());
+        $this->httpClientBuilder->addPlugin(
+            new Plugin\AddHostPlugin(Psr17FactoryDiscovery::findUriFactory()
+                ->createUri('https://hacker-news.firebaseio.com/v0/'))
+        );
     }
 
     protected function getHttpClientBuilder(): HttpClientBuilder
