@@ -13,5 +13,12 @@ class Client
     public function __construct(HttpClientBuilder $httpClientBuilder = null)
     {
         $this->httpClientBuilder = $httpClientBuilder ?: new HttpClientBuilder();
+
+        $this->setupHttpBuilder();
+    }
+
+    private function setupHttpBuilder(): void
+    {
+
     }
 }
