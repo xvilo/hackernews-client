@@ -40,6 +40,6 @@ abstract class AbstractApi
 
         $response = $this->client->getHttpClient()->get($path.'.json', $requestHeaders);
 
-        return json_decode((string) $response->getBody(), true);
+        return (array)json_decode((string) $response->getBody(), true);
     }
 }
