@@ -1,9 +1,9 @@
-name: PHP Composer
+name: PHP Lint
 
 on: [push]
 
 jobs:
-  build:
+  composer:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -11,14 +11,35 @@ jobs:
       - name: Validate composer.json and composer.lock
         run: composer validate
 
+  phpcsfixer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
 
       - name: Check php code style (PHP CS Fixer)
         run: ./vendor/bin/php-cs-fixer fix -v src/
 
+  phpstan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
+
       - name: Check php static analysis (PHPStan)
         run: ./vendor/bin/phpstan analyse
+
+  rector:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
 
       - name: Check PHP auto refactor (Rector)
         run: ./vendor/bin/rector process
