@@ -40,6 +40,22 @@ var_dump(
 
 ```
 
+## API Scopes
+- Item
+  - `getItem(int $id): array;`
+- User
+  - `getUser(string $username): array;`
+- FrontPage
+  - `getTopStories(): array`
+  - `getNewStories(): array`
+  - `getBestStories(): array`
+  - `getAskStories(): array`
+  - `getShowStories(): array`
+  - `getJobStories(): array`
+- MetaData
+  - `getMaxItem(): int`
+  - `getUpdates(): array`
+
 ## FAQ
 
 ### php-http/client-implementation needed
