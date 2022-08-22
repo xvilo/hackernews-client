@@ -24,6 +24,7 @@ class Client
     private Api\Item $item;
     private Api\Users $user;
     private Api\FrontPage $frontPage;
+    private Api\MetaData $metaData;
 
     public function __construct(HttpClientBuilder $httpClientBuilder = null)
     {
@@ -35,6 +36,7 @@ class Client
         $this->item = new Api\Item($this);
         $this->user = new Api\Users($this);
         $this->frontPage = new Api\FrontPage($this);
+        $this->metaData = new Api\MetaData($this);
     }
 
     public function getHttpClient(): HttpMethodsClient
@@ -55,6 +57,11 @@ class Client
     public function frontPage(): Api\FrontPage
     {
         return $this->frontPage;
+    }
+
+    public function metaData(): Api\MetaData
+    {
+        return $this->metaData;
     }
 
     protected function getHttpClientBuilder(): HttpClientBuilder
