@@ -1,6 +1,6 @@
 # HackerNews Client (PHP)
 
-A HackerNews API Wrapper, it's based on the official Firebase API provided at [hackernews/api](https://github.com/hackernews/api).
+A HackerNews API Wrapper, it's based on the official Firebase API provided at [HackerNews/api](https://github.com/hackernews/api).
 In its current form, it supports all endpoints with basic calls, this will be expanded in the future.
 
 ### Installation
