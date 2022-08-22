@@ -17,11 +17,9 @@ use Xvilo\HackerNews\Client;
 
 abstract class AbstractApi
 {
-    protected Client $client;
-
-    public function __construct(Client $client)
-    {
-        $this->client = $client;
+    public function __construct(
+        protected Client $client
+    ) {
     }
 
     /**
@@ -40,6 +38,6 @@ abstract class AbstractApi
 
         $response = $this->client->getHttpClient()->get($path.'.json', $requestHeaders);
 
-        return (array)json_decode((string) $response->getBody(), true);
+        return (array) json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
     }
 }

@@ -13,30 +13,37 @@ declare(strict_types=1);
 namespace Xvilo\HackerNews;
 
 use Http\Client\Common\HttpMethodsClient;
-use Http\Client\Common\Plugin;
+use Http\Client\Common\Plugin\AddHostPlugin;
+use Http\Client\Common\Plugin\AddPathPlugin;
+use Http\Client\Common\Plugin\RedirectPlugin;
 use Http\Discovery\Psr17FactoryDiscovery;
+use Xvilo\HackerNews\Api\FrontPage;
+use Xvilo\HackerNews\Api\Item;
+use Xvilo\HackerNews\Api\MetaData;
+use Xvilo\HackerNews\Api\Users;
 use Xvilo\HackerNews\HttpClient\HttpClientBuilder;
 
 class Client
 {
-    private HttpClientBuilder $httpClientBuilder;
+    private readonly HttpClientBuilder $httpClientBuilder;
 
-    private Api\Item $item;
-    private Api\Users $user;
-    private Api\FrontPage $frontPage;
-    private Api\MetaData $metaData;
+    private readonly Item $item;
+    private readonly Users $user;
+    private readonly FrontPage $frontPage;
+    private readonly MetaData $metaData;
 
-    public function __construct(HttpClientBuilder $httpClientBuilder = null)
-    {
+    public function __construct(
+        HttpClientBuilder $httpClientBuilder = null
+    ) {
         $this->httpClientBuilder = $httpClientBuilder ?: new HttpClientBuilder();
 
         $this->setupHttpBuilder();
 
         // Setup api
-        $this->item = new Api\Item($this);
-        $this->user = new Api\Users($this);
-        $this->frontPage = new Api\FrontPage($this);
-        $this->metaData = new Api\MetaData($this);
+        $this->item = new Item($this);
+        $this->user = new Users($this);
+        $this->frontPage = new FrontPage($this);
+        $this->metaData = new MetaData($this);
     }
 
     public function getHttpClient(): HttpMethodsClient
@@ -44,22 +51,22 @@ class Client
         return $this->getHttpClientBuilder()->getHttpClient();
     }
 
-    public function item(): Api\Item
+    public function item(): Item
     {
         return $this->item;
     }
 
-    public function user(): Api\Users
+    public function user(): Users
     {
         return $this->user;
     }
 
-    public function frontPage(): Api\FrontPage
+    public function frontPage(): FrontPage
     {
         return $this->frontPage;
     }
 
-    public function metaData(): Api\MetaData
+    public function metaData(): MetaData
     {
         return $this->metaData;
     }
@@ -72,13 +79,13 @@ class Client
     private function setupHttpBuilder(): void
     {
         $uri = 'https://hacker-news.firebaseio.com/v0/';
-        $this->httpClientBuilder->addPlugin(new Plugin\RedirectPlugin());
+        $this->httpClientBuilder->addPlugin(new RedirectPlugin());
         $this->httpClientBuilder->addPlugin(
-            new Plugin\AddHostPlugin(Psr17FactoryDiscovery::findUriFactory()
+            new AddHostPlugin(Psr17FactoryDiscovery::findUriFactory()
                 ->createUri($uri))
         );
         $this->httpClientBuilder->addPlugin(
-            new Plugin\AddPathPlugin(Psr17FactoryDiscovery::findUriFactory()
+            new AddPathPlugin(Psr17FactoryDiscovery::findUriFactory()
                 ->createUri($uri))
         );
     }

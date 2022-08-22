@@ -19,3 +19,6 @@ jobs:
 
       - name: Check php static analysis (PHPStan)
         run: ./vendor/bin/phpstan analyse
+
+      - name: Check PHP auto refactor (Rector)
+        run: ./vendor/bin/rector process

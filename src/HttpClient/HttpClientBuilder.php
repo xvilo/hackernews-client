@@ -23,13 +23,13 @@ use Psr\Http\Message\StreamFactoryInterface;
 
 class HttpClientBuilder
 {
-    private HttpClient $httpClient;
-    private RequestFactoryInterface $requestFactory;
-    private StreamFactoryInterface $streamFactory;
+    private readonly HttpClient $httpClient;
+    private readonly RequestFactoryInterface $requestFactory;
+    private readonly StreamFactoryInterface $streamFactory;
 
     /** @var Plugin[] */
     private array $plugins = [];
-    private ?HttpMethodsClient $pluginClient;
+    private ?HttpMethodsClient $pluginClient = null;
 
     public function __construct(
         HttpClient $httpClient = null,
